@@ -1,6 +1,9 @@
 package at.hagenberg.studex
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
+import android.util.Log.ERROR
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -14,27 +17,26 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.Navigation
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.google.firebase.FirebaseApp
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
+import at.hagenberg.studex.core.Subject
+import at.hagenberg.studex.proxy.ServiceProxyFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //val db = Firebase.database("https://studex-b9a51-default-rtdb.europe-west1.firebasedatabase.app")
 
         setContent {
             MaterialTheme {
@@ -61,16 +63,26 @@ fun NavigationComponent(navController: NavHostController) {
     }
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SubjectOverview(navController: NavController) {
 
-    //val myRef = db.getReference("subjects")
-
-
     val openDialog = remember { mutableStateOf(false) }
-    var list = remember { mutableStateListOf("Maths", "PRO", "WIA", "OIS", "VIS", "FPS", "DB") }
+    var list = remember { mutableStateListOf<Subject>() }
     var text by remember { mutableStateOf("") }
+
+    CoroutineScope(Dispatchers.IO).launch {
+        var subjects = ServiceProxyFactory.createProxy().getSubjects()
+
+        withContext(Dispatchers.Main) {
+            //list.clear()
+            Log.e("ABC", "DA WÜRDS WAS IN DE LISTE FÜLLEN")
+            list.addAll(subjects)
+            Log.e("ABC", "DA HATS WAS REINGEFÜLLT")
+        }
+
+    }
 
 
     Scaffold(
@@ -95,10 +107,12 @@ fun SubjectOverview(navController: NavController) {
                     backgroundColor = Color(0xFF23752A),
                     onClick = { navController.navigate("showDetails/$name") }
                 ) {
-                    Text(text = name, modifier = Modifier.padding(16.dp),
-                        textAlign = TextAlign.Center,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold)
+                    name.name?.let { it1 ->
+                        Text(text = it1, modifier = Modifier.padding(16.dp),
+                            textAlign = TextAlign.Center,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold)
+                    }
 
 
                 }
@@ -117,7 +131,10 @@ fun SubjectOverview(navController: NavController) {
                 confirmButton = {
                     Button(onClick = {
                         openDialog.value = false
-                        list.add(text)
+                        CoroutineScope(Dispatchers.IO).launch {
+                            ServiceProxyFactory.createProxy().postSubject(name = text)
+                        }
+
                         text = ""
                     }) {
                         Text(text = "Save")
