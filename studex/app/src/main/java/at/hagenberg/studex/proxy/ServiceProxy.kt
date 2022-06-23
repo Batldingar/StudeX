@@ -11,5 +11,5 @@ interface ServiceProxy {
     suspend fun postSubject(name: String)
 
     @Throws(IOException::class)
-    suspend fun getSubjects(): MutableList<Subject>
+    fun getSubjects(): MutableList<Subject>
 }

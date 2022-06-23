@@ -79,6 +79,7 @@ fun SubjectOverview(navController: NavController) {
             //list.clear()
             Log.e("ABC", "DA WÜRDS WAS IN DE LISTE FÜLLEN")
             list.addAll(subjects)
+            Log.e("ABC", list.size.toString());
             Log.e("ABC", "DA HATS WAS REINGEFÜLLT")
         }
 
@@ -133,9 +134,10 @@ fun SubjectOverview(navController: NavController) {
                         openDialog.value = false
                         CoroutineScope(Dispatchers.IO).launch {
                             ServiceProxyFactory.createProxy().postSubject(name = text)
+                            text = ""
                         }
 
-                        text = ""
+
                     }) {
                         Text(text = "Save")
                     }},

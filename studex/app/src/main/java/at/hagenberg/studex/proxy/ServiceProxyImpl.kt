@@ -17,7 +17,8 @@ class ServiceProxyImpl : ServiceProxy {
         subjectReference.child(UUID.randomUUID().toString()).setValue(subject)
     }
 
-    override suspend fun getSubjects(): MutableList<Subject> {
+    // fixing with callback
+    override fun getSubjects(): MutableList<Subject> {
         var list = mutableListOf<Subject>()
 
         subjectReference.get().addOnSuccessListener {
@@ -25,6 +26,7 @@ class ServiceProxyImpl : ServiceProxy {
             subjects.entries.forEach { entry ->
                 list.add(Subject((entry.value as HashMap<String, String>).values.toList()[0]))
             }
+
         }
 
         return list
