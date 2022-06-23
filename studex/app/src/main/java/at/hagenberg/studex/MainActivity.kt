@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,11 +25,17 @@ import androidx.navigation.Navigation
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.FirebaseApp
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //val db = Firebase.database("https://studex-b9a51-default-rtdb.europe-west1.firebasedatabase.app")
+
         setContent {
             MaterialTheme {
                 // A surface container using the 'background' color from the theme
@@ -57,6 +64,10 @@ fun NavigationComponent(navController: NavHostController) {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SubjectOverview(navController: NavController) {
+
+    //val myRef = db.getReference("subjects")
+
+
     val openDialog = remember { mutableStateOf(false) }
     var list = remember { mutableStateListOf("Maths", "PRO", "WIA", "OIS", "VIS", "FPS", "DB") }
     var text by remember { mutableStateOf("") }

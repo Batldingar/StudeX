@@ -16,6 +16,9 @@ fun DetailView(name: String?) {
         OutlinedButton(onClick = {  }) {
             Text("Upload")
         }
+        OutlinedButton(onClick = {  }) {
+            Text("Remove")
+        }
     }
 
 }
