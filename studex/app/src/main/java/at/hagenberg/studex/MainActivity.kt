@@ -20,10 +20,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.Navigation
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
 
 class MainActivity : ComponentActivity() {
 
@@ -42,6 +42,13 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onStart() {
+        super.onStart()
+
+        // Required init call for PDFBox library
+        PDFBoxResourceLoader.init(applicationContext)
+    }
 }
 
 @Composable
@@ -51,6 +58,7 @@ fun NavigationComponent(navController: NavHostController) {
         composable("showDetails/{itemId}") { backStackEntry ->
             DetailView(backStackEntry.arguments?.getString("itemId"))
         }
+        composable("selectPDF") { PDFView() }
     }
 }
 
@@ -88,8 +96,6 @@ fun SubjectOverview(navController: NavController) {
                         textAlign = TextAlign.Center,
                         color = Color.White,
                         fontWeight = FontWeight.Bold)
-
-
                 }
 
             }
