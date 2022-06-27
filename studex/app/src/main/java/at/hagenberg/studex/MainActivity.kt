@@ -1,9 +1,9 @@
 package at.hagenberg.studex
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.util.Log.ERROR
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -14,9 +14,11 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,15 +28,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
 import at.hagenberg.studex.core.Subject
-import at.hagenberg.studex.proxy.ServiceProxyFactory
+import at.hagenberg.studex.proxy.DatabaseProxy
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -63,7 +65,6 @@ fun NavigationComponent(navController: NavHostController) {
     }
 }
 
-@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SubjectOverview(navController: NavController) {
@@ -72,19 +73,8 @@ fun SubjectOverview(navController: NavController) {
     var list = remember { mutableStateListOf<Subject>() }
     var text by remember { mutableStateOf("") }
 
-    CoroutineScope(Dispatchers.IO).launch {
-        var subjects = ServiceProxyFactory.createProxy().getSubjects()
-
-        withContext(Dispatchers.Main) {
-            //list.clear()
-            Log.e("ABC", "DA WÜRDS WAS IN DE LISTE FÜLLEN")
-            list.addAll(subjects)
-            Log.e("ABC", list.size.toString());
-            Log.e("ABC", "DA HATS WAS REINGEFÜLLT")
-        }
-
-    }
-
+    val context = LocalContext.current
+    getSubjects(context, list)
 
     Scaffold(
         floatingActionButton = {
@@ -133,8 +123,9 @@ fun SubjectOverview(navController: NavController) {
                     Button(onClick = {
                         openDialog.value = false
                         CoroutineScope(Dispatchers.IO).launch {
-                            ServiceProxyFactory.createProxy().postSubject(name = text)
+                            DatabaseProxy.createProxy(context).subjectDao().insertSubject(Subject(0, name = text))
                             text = ""
+                            getSubjects(context, list)
                         }
 
 
@@ -151,6 +142,19 @@ fun SubjectOverview(navController: NavController) {
     }
 
 
+}
+
+fun getSubjects(context: Context, list: SnapshotStateList<Subject>) {
+
+    CoroutineScope(Dispatchers.IO).launch {
+        val subjects = DatabaseProxy.createProxy(context).subjectDao().getAll()
+
+        withContext(Dispatchers.Main) {
+            list.clear()
+            list.addAll(subjects)
+        }
+
+    }
 }
 
 @Preview(showBackground = true)
