@@ -53,6 +53,13 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onStart() {
+        super.onStart()
+
+        // Required init call for PDFBox library
+        PDFBoxResourceLoader.init(applicationContext)
+    }
 }
 
 @Composable
@@ -62,6 +69,7 @@ fun NavigationComponent(navController: NavHostController) {
         composable("showDetails/{itemId}") { backStackEntry ->
             DetailView(backStackEntry.arguments?.getString("itemId"))
         }
+        composable("selectPDF") { PDFView() }
     }
 }
 
