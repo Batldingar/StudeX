@@ -1,6 +1,9 @@
 package at.hagenberg.studex
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -11,6 +14,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,17 +28,17 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.google.firebase.FirebaseApp
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
-import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
+import androidx.room.Room
+import at.hagenberg.studex.core.Subject
+import at.hagenberg.studex.proxy.DatabaseProxy
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //val db = Firebase.database("https://studex-b9a51-default-rtdb.europe-west1.firebasedatabase.app")
 
         setContent {
             MaterialTheme {
@@ -73,13 +77,12 @@ fun NavigationComponent(navController: NavHostController) {
 @Composable
 fun SubjectOverview(navController: NavController) {
 
-    //val myRef = db.getReference("subjects")
-
-
     val openDialog = remember { mutableStateOf(false) }
-    var list = remember { mutableStateListOf("Maths", "PRO", "WIA", "OIS", "VIS", "FPS", "DB") }
+    var list = remember { mutableStateListOf<Subject>() }
     var text by remember { mutableStateOf("") }
 
+    val context = LocalContext.current
+    getSubjects(context, list)
 
     Scaffold(
         floatingActionButton = {
@@ -96,17 +99,21 @@ fun SubjectOverview(navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(8.dp),
 
         ) {
-            itemsIndexed(items = list) { _, name ->
+            itemsIndexed(items = list) { _, subject ->
                 Card(modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
                     border = BorderStroke(1.dp, Color.White),
                     backgroundColor = Color(0xFF23752A),
-                    onClick = { navController.navigate("showDetails/$name") }
+                    onClick = { navController.navigate("showDetails/${subject.id}") }
                 ) {
-                    Text(text = name, modifier = Modifier.padding(16.dp),
-                        textAlign = TextAlign.Center,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold)
+                    subject.name?.let { it1 ->
+                        Text(text = it1, modifier = Modifier.padding(16.dp),
+                            textAlign = TextAlign.Center,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold)
+                    }
+
+
                 }
 
             }
@@ -123,8 +130,13 @@ fun SubjectOverview(navController: NavController) {
                 confirmButton = {
                     Button(onClick = {
                         openDialog.value = false
-                        list.add(text)
-                        text = ""
+                        CoroutineScope(Dispatchers.IO).launch {
+                            DatabaseProxy.createProxy(context).subjectDao().insertSubject(Subject(0, name = text))
+                            text = ""
+                            getSubjects(context, list)
+                        }
+
+
                     }) {
                         Text(text = "Save")
                     }},
@@ -138,6 +150,19 @@ fun SubjectOverview(navController: NavController) {
     }
 
 
+}
+
+fun getSubjects(context: Context, list: SnapshotStateList<Subject>) {
+
+    CoroutineScope(Dispatchers.IO).launch {
+        val subjects = DatabaseProxy.createProxy(context).subjectDao().getAll()
+
+        withContext(Dispatchers.Main) {
+            list.clear()
+            list.addAll(subjects)
+        }
+
+    }
 }
 
 @Preview(showBackground = true)
