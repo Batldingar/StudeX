@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "pdfs", foreignKeys = arrayOf(ForeignKey(entity = Subject::class, parentColumns = arrayOf("subject_id"), childColumns = arrayOf("pdf_id"), onUpdate = ForeignKey.CASCADE, onDelete = ForeignKey.CASCADE)))
+@Entity(tableName = "pdfs")
 data class PDF(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "pdf_id") val id: Int,

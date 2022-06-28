@@ -6,6 +6,8 @@ import androidx.room.Room
 object DatabaseProxy {
 
     fun createProxy(context: Context): AppDatabase {
-        return Room.databaseBuilder(context, AppDatabase::class.java, "studex").build()
+        return Room.databaseBuilder(context, AppDatabase::class.java, "studex")
+            .fallbackToDestructiveMigration()
+            .build()
     }
 }

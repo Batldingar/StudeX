@@ -91,14 +91,14 @@ fun SubjectOverview(navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(8.dp),
 
         ) {
-            itemsIndexed(items = list) { _, name ->
+            itemsIndexed(items = list) { _, subject ->
                 Card(modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
                     border = BorderStroke(1.dp, Color.White),
                     backgroundColor = Color(0xFF23752A),
-                    onClick = { navController.navigate("showDetails/$name") }
+                    onClick = { navController.navigate("showDetails/${subject.id}") }
                 ) {
-                    name.name?.let { it1 ->
+                    subject.name?.let { it1 ->
                         Text(text = it1, modifier = Modifier.padding(16.dp),
                             textAlign = TextAlign.Center,
                             color = Color.White,

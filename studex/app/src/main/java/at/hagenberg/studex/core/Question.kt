@@ -7,7 +7,7 @@ import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
 import com.google.type.DateTime
 
-@Entity(tableName = "questions", foreignKeys = arrayOf(ForeignKey(entity = PDF::class, parentColumns = arrayOf("pdf_id"), childColumns = arrayOf("question_id"), onUpdate = CASCADE, onDelete = CASCADE)))
+@Entity(tableName = "questions")
 data class Question(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "question_id") val id: Int,
