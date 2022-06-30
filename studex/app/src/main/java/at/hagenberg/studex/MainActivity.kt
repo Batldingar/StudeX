@@ -30,7 +30,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import at.hagenberg.studex.core.Subject
-import at.hagenberg.studex.proxy.DatabaseProxy
+import at.hagenberg.studex.proxy.AppDatabase
+import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -67,9 +68,15 @@ fun NavigationComponent(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "welcome" ) {
         composable("welcome") { SubjectOverview(navController = navController)}
         composable("showDetails/{itemId}") { backStackEntry ->
-            DetailView(backStackEntry.arguments?.getString("itemId"))
+            DetailView(backStackEntry.arguments?.getString("itemId"), navController = navController)
         }
         composable("selectPDF") { PDFView() }
+        composable("newQuestion/{itemId}") { backStackEntry ->
+            NewQuestionView(backStackEntry.arguments?.getString("itemId"), navController = navController)
+        }
+        composable("questions/{itemId}") { backStackEntry ->
+            QuestionView(subjectId = backStackEntry.arguments?.getString("itemId"), navController = navController)
+        }
     }
 }
 
@@ -131,8 +138,7 @@ fun SubjectOverview(navController: NavController) {
                     Button(onClick = {
                         openDialog.value = false
                         CoroutineScope(Dispatchers.IO).launch {
-                            DatabaseProxy.createProxy(context).subjectDao().insertSubject(Subject(0, name = text))
-                            text = ""
+                            AppDatabase.getInstance(context).subjectDao().insertSubject(Subject(0, name = text))
                             getSubjects(context, list)
                         }
 
@@ -155,7 +161,7 @@ fun SubjectOverview(navController: NavController) {
 fun getSubjects(context: Context, list: SnapshotStateList<Subject>) {
 
     CoroutineScope(Dispatchers.IO).launch {
-        val subjects = DatabaseProxy.createProxy(context).subjectDao().getAll()
+        val subjects = AppDatabase.getInstance(context).subjectDao().getAll()
 
         withContext(Dispatchers.Main) {
             list.clear()
