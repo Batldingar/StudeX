@@ -1,4 +1,4 @@
-package at.hagenberg.studex
+package at.hagenberg.studex.ui
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -17,11 +17,19 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
 
+/**
+ * A view model class for the PDFView
+ */
 class PDFViewModel : ViewModel() {
     val pageBitmap = MutableLiveData<ImageBitmap>()
 
-    fun loadDocument(uri: Uri?, context: Context?) {
-        if (uri != null && context != null) {
+    /**
+     * Loads the first page of a pdf file
+     * @param context The current context
+     * @param uri The pdf's file system uri
+     */
+    fun loadDocument(context: Context, uri: Uri?) {
+        if (uri != null) {
             val filePath = uri.path
 
             if (filePath != null) {

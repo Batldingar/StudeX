@@ -1,4 +1,4 @@
-package at.hagenberg.studex
+package at.hagenberg.studex.ui
 
 import android.content.Context
 import android.widget.Toast
@@ -25,20 +25,23 @@ fun BottomNavigation(navController: NavHostController, context: Context, subject
         BottomNavigationItem(selected = selectedItem == 0,
             onClick = {
                 selectedItem = 0
-                navController.navigate("showDetails/${subjectId}") },
+                navController.navigate("showDetails/${subjectId}")
+            },
             label = { Text("Overview") },
             icon = { Icon(Icons.Filled.Favorite, contentDescription = null) })
         // TODO add here upload
         BottomNavigationItem(selected = selectedItem == 1,
             onClick = {
                 selectedItem = 1
-                addDummyPDF(Integer.parseInt(subjectId), context) },
+                addDummyPDF(Integer.parseInt(subjectId), context)
+            },
             label = { Text("Upload PDF") },
             icon = { Icon(Icons.Filled.Favorite, contentDescription = null) })
         BottomNavigationItem(selected = selectedItem == 2,
             onClick = {
                 selectedItem = 2
-                navController.navigate("questions/${subjectId}") },
+                navController.navigate("questions/${subjectId}")
+            },
             label = { Text("Questions") },
             icon = { Icon(Icons.Filled.Favorite, contentDescription = null) })
     }

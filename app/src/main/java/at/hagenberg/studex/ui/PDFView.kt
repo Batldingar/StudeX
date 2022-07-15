@@ -1,4 +1,4 @@
-package at.hagenberg.studex
+package at.hagenberg.studex.ui
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,13 +17,19 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import java.lang.IllegalStateException
 
+/**
+ * A composable consisting of:
+ * - a button for selecting a pdf file
+ * - an image displaying a pdf page
+ * @param viewModel A pdf view model (populated automatically)
+ */
 @Composable
-fun PDFView(model: PDFViewModel = viewModel()) {
+fun PDFView(viewModel: PDFViewModel = viewModel()) {
     val context = LocalContext.current
 
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
-            model.loadDocument(uri, context)
+            viewModel.loadDocument(context, uri)
         }
 
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -49,7 +55,7 @@ fun PDFView(model: PDFViewModel = viewModel()) {
             }
         }
 
-        val pageBitmap: ImageBitmap? by model.pageBitmap.observeAsState()
+        val pageBitmap: ImageBitmap? by viewModel.pageBitmap.observeAsState()
 
         if (pageBitmap != null) {
             Image(
@@ -61,9 +67,13 @@ fun PDFView(model: PDFViewModel = viewModel()) {
     }
 }
 
+/**
+ * A composable consisting of:
+ * - the pdf view preview
+ */
 @Preview(showBackground = true)
 @Composable
-fun PDFPreview() {
+fun PDFViewPreview() {
     MaterialTheme {
         PDFView()
     }

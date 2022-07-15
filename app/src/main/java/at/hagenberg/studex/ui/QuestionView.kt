@@ -1,4 +1,4 @@
-package at.hagenberg.studex
+package at.hagenberg.studex.ui
 
 import android.content.Context
 import android.widget.Toast
@@ -15,7 +15,6 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontStyle
@@ -35,30 +34,43 @@ import kotlinx.coroutines.withContext
 @Composable
 fun QuestionView(subjectId: String?, navController: NavHostController) {
 
-    if(subjectId == null) return
+    if (subjectId == null) return
     var context = LocalContext.current
 
     var listOfQuestions = remember { mutableStateListOf<QuestionsOrderedByPDF>() }
-    var listOfQuestionsOrderedByPdf = remember { mutableStateMapOf<PDF, List<Question>>()}
-    if(listOfQuestions.size == 0) {
+    var listOfQuestionsOrderedByPdf = remember { mutableStateMapOf<PDF, List<Question>>() }
+    if (listOfQuestions.size == 0) {
         getQuestions(context, listOfQuestionsOrderedByPdf, Integer.parseInt(subjectId))
     }
 
 
-    Scaffold(bottomBar = { BottomNavigation(navController = navController, context = context, subjectId = subjectId) },
+    Scaffold(bottomBar = {
+        BottomNavigation(
+            navController = navController,
+            context = context,
+            subjectId = subjectId
+        )
+    },
         floatingActionButtonPosition = FabPosition.Center,
-        floatingActionButton = { FloatingActionButton(onClick = { navController.navigate("newQuestion/${subjectId}")}) {
-            Icon(Icons.Filled.Add, "")
-        }}) {
+        floatingActionButton = {
+            FloatingActionButton(onClick = { navController.navigate("newQuestion/${subjectId}") }) {
+                Icon(Icons.Filled.Add, "")
+            }
+        }) {
 
 
         Column(modifier = Modifier.padding(start = 8.dp)) {
             listOfQuestionsOrderedByPdf.forEach { entry ->
-                Text(entry.key.document_name, fontWeight = FontWeight.Bold, fontSize = 20.sp, modifier = Modifier.padding(top = 8.dp, bottom = 4.dp))
+                Text(
+                    entry.key.document_name,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
+                )
 
                 LazyColumn() {
                     itemsIndexed(items = entry.value) { index, question ->
-                        Text( question.question, modifier = Modifier.padding(bottom = 4.dp))
+                        Text(question.question, modifier = Modifier.padding(bottom = 4.dp))
                         Text(question.answer, fontStyle = FontStyle.Italic)
                     }
                 }
@@ -69,13 +81,19 @@ fun QuestionView(subjectId: String?, navController: NavHostController) {
     }
 }
 
-private fun getQuestions(context: Context, listOfQuestionsOrderedByPdf: SnapshotStateMap<PDF, List<Question>>, subjectId: Int) {
+private fun getQuestions(
+    context: Context,
+    listOfQuestionsOrderedByPdf: SnapshotStateMap<PDF, List<Question>>,
+    subjectId: Int
+) {
     CoroutineScope(Dispatchers.IO).launch {
         var map = mutableMapOf<PDF, List<Question>>()
-        val pdfs = AppDatabase.getInstance(context).pdfDao().getPDFsForSubjectDao(subjectId = subjectId)
+        val pdfs =
+            AppDatabase.getInstance(context).pdfDao().getPDFsForSubjectDao(subjectId = subjectId)
 
-        for(pdf in pdfs) {
-            val questions = AppDatabase.getInstance(context).questionDao().getQuestionsForPdf(pdf.id)
+        for (pdf in pdfs) {
+            val questions =
+                AppDatabase.getInstance(context).questionDao().getQuestionsForPdf(pdf.id)
             listOfQuestionsOrderedByPdf[pdf] = questions
         }
 
@@ -90,7 +108,9 @@ fun NewQuestionView(subjectId: String?, navController: NavHostController) {
     val listPdfs = remember { mutableStateListOf<PDF>() }
     val context = LocalContext.current
 
-    if(subjectId == null) { return }
+    if (subjectId == null) {
+        return
+    }
     getPDFsForSubjec(context, Integer.parseInt(subjectId), listPdfs)
 
     var question by remember { mutableStateOf("") }
@@ -98,7 +118,7 @@ fun NewQuestionView(subjectId: String?, navController: NavHostController) {
     val radioOptions = listOf("1", "2", "3")
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
     var expanded by remember { mutableStateOf(false) }
-    var selectedPdf by remember { mutableStateOf<PDF?>(null)}
+    var selectedPdf by remember { mutableStateOf<PDF?>(null) }
 
     Scaffold(
         topBar = {
@@ -107,8 +127,23 @@ fun NewQuestionView(subjectId: String?, navController: NavHostController) {
             }
         },
         bottomBar = {
-            Row(modifier = Modifier.padding(start = 8.dp, bottom = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(onClick = { saveQuestionForSubject(context = context, Question(0, answer, question, difficulty = Integer.parseInt(selectedOption), pdfId = selectedPdf?.id), navController = navController)}) {
+            Row(
+                modifier = Modifier.padding(start = 8.dp, bottom = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Button(onClick = {
+                    saveQuestionForSubject(
+                        context = context,
+                        Question(
+                            0,
+                            answer,
+                            question,
+                            difficulty = Integer.parseInt(selectedOption),
+                            pdfId = selectedPdf?.id
+                        ),
+                        navController = navController
+                    )
+                }) {
                     Text(text = "Speichern")
                 }
 
@@ -168,10 +203,12 @@ fun NewQuestionView(subjectId: String?, navController: NavHostController) {
 
             }
 
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .wrapContentSize(Alignment.TopStart)
-                .padding(top = 16.dp)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .wrapContentSize(Alignment.TopStart)
+                    .padding(top = 16.dp)
+            ) {
 
                 Row() {
                     selectedPdf?.let { it1 -> Text(text = it1.document_name) }
@@ -218,7 +255,11 @@ private fun getPDFsForSubjec(context: Context, subjectId: Int, listPdfs: Snapsho
     }
 }
 
-private fun saveQuestionForSubject(context: Context, question: Question, navController: NavHostController) {
+private fun saveQuestionForSubject(
+    context: Context,
+    question: Question,
+    navController: NavHostController
+) {
     CoroutineScope(Dispatchers.IO).launch {
         AppDatabase.getInstance(context).questionDao().insertQuestion(question)
 
