@@ -1,9 +1,7 @@
 package at.hagenberg.studex.ui
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
-import android.util.Log
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.MutableLiveData
@@ -14,7 +12,6 @@ import com.tom_roush.pdfbox.rendering.ImageType
 import com.tom_roush.pdfbox.rendering.PDFRenderer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.File
 import java.io.IOException
 
 /**

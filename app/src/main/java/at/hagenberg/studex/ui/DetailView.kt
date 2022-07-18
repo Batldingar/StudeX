@@ -12,6 +12,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,15 +46,21 @@ fun DetailView(subjectID: String?, navHostController: NavHostController) {
     loadSubjectDetails(context, Integer.parseInt(subjectID), subjectDetails, pdfList)
 
     Scaffold(topBar = {
-        TopAppBar() {
-            subjectDetails.value?.name?.let { Text(it, fontWeight = FontWeight.Bold) }
+        TopAppBar(backgroundColor = colorResource(id = R.color.foreground_view)) {
+            subjectDetails.value?.name?.let {
+                Text(
+                    it, fontWeight = FontWeight.Bold, color = colorResource(
+                        id = R.color.text_light
+                    )
+                )
+            }
         }
     },
         bottomBar = {
-            BottomNavigation(
-                navController = navHostController,
+            BottomNavigationBar(
+                navHostController = navHostController,
                 context = context,
-                subjectId = subjectID
+                subjectID = subjectID
             )
         }) {
         Column(modifier = Modifier.padding(start = 8.dp)) {
@@ -66,30 +73,49 @@ fun DetailView(subjectID: String?, navHostController: NavHostController) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
 
-                OutlinedButton(onClick = {
-                    subjectDetails.value?.let {
-                        deleteSubject(
-                            context,
-                            it,
-                            navHostController
-                        )
-                    }
-                }) {
-                    Icon(Icons.Filled.Delete, contentDescription = "Delete")
+                OutlinedButton(
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = colorResource(
+                            id = R.color.signal_view
+                        ), backgroundColor = MaterialTheme.colors.background
+                    ), onClick = {
+                        subjectDetails.value?.let {
+                            deleteSubject(
+                                context,
+                                it,
+                                navHostController
+                            )
+                        }
+                    }) {
+                    Icon(Icons.Filled.Delete, contentDescription = "")
                 }
             }
 
-            if(!pdfList.isEmpty()) {
-                Text(stringResource(R.string.subject_pdf_list_title), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            if (!pdfList.isEmpty()) {
+                Text(
+                    stringResource(R.string.subject_pdf_list_title),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(id = R.color.text_dark)
+                )
 
                 LazyColumn() {
                     itemsIndexed(items = pdfList) { index, pdf ->
-
-                        Text(pdf.document_name)
+                        Text(
+                            pdf.document_name,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = colorResource(id = R.color.text_dark)
+                        )
                     }
                 }
             } else {
-                Text(stringResource(R.string.subject_pdf_list_error), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    stringResource(R.string.subject_pdf_list_error),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(id = R.color.text_dark)
+                )
             }
         }
     }
@@ -126,7 +152,11 @@ private fun loadSubjectDetails(
  * @param subject The subject to be deleted
  * @param navHostController The navigation host controller to be used for navigation
  */
-private fun deleteSubject(context: Context, subject: Subject, navHostController: NavHostController) {
+private fun deleteSubject(
+    context: Context,
+    subject: Subject,
+    navHostController: NavHostController
+) {
     CoroutineScope(Dispatchers.IO).launch {
         AppDatabase.getInstance(context).subjectDao().delete(subject)
     }

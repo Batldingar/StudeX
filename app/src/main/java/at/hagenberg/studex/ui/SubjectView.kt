@@ -1,7 +1,6 @@
 package at.hagenberg.studex.ui
 
 import android.content.Context
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,8 +14,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -51,8 +50,8 @@ fun SubjectView(navController: NavController) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { dialogIsVisibleFlag.value = true },
-                backgroundColor = Color(0xFF23752A),
-                contentColor = Color.White
+                backgroundColor = colorResource(id = R.color.foreground_view),
+                contentColor = colorResource(id = R.color.text_light)
             ) {
                 Icon(Icons.Filled.Add, "")
             }
@@ -67,15 +66,14 @@ fun SubjectView(navController: NavController) {
             itemsIndexed(items = subjectList) { _, subject ->
                 Card(modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
-                    border = BorderStroke(1.dp, Color.White),
-                    backgroundColor = Color(0xFF23752A),
-                    onClick = { navController.navigate("subject_detail_screen/${subject.id}") }
+                    backgroundColor = colorResource(id = R.color.foreground_view),
+                    onClick = { navController.navigate("${MainActivity.Companion.SUBJECT_DETAIL_PREFIX}${subject.id}") }
                 ) {
                     subject.name?.let { it1 ->
                         Text(
                             text = it1, modifier = Modifier.padding(16.dp),
                             textAlign = TextAlign.Center,
-                            color = Color.White,
+                            color = colorResource(id = R.color.text_light),
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -88,26 +86,49 @@ fun SubjectView(navController: NavController) {
 
             AlertDialog(
                 onDismissRequest = { dialogIsVisibleFlag.value = false },
-                title = { Text(text = stringResource(R.string.subject_addition_dialog_title)) },
+                title = {
+                    Text(
+                        text = stringResource(R.string.subject_addition_dialog_title),
+                        color = colorResource(id = R.color.text_dark)
+                    )
+                },
                 text = {
                     TextField(value = textFieldText,
-                        onValueChange = { textFieldText = it })
+                        onValueChange = { textFieldText = it },
+                        colors = TextFieldDefaults.textFieldColors(
+                            textColor = colorResource(id = R.color.text_dark),
+                            focusedIndicatorColor = colorResource(id = R.color.background_view),
+                            cursorColor = colorResource(id = R.color.background_view)
+                        )
+                    )
                 },
                 confirmButton = {
-                    Button(onClick = {
-                        dialogIsVisibleFlag.value = false
-                        CoroutineScope(Dispatchers.IO).launch {
-                            AppDatabase.getInstance(context).subjectDao()
-                                .insertSubject(Subject(0, name = textFieldText))
-                            loadSubjects(context, subjectList)
-                        }
-                    }) {
-                        Text(text = stringResource(R.string.subject_addition_save_button_text))
+                    Button(
+                        onClick = {
+                            dialogIsVisibleFlag.value = false
+                            CoroutineScope(Dispatchers.IO).launch {
+                                AppDatabase.getInstance(context).subjectDao()
+                                    .insertSubject(Subject(0, name = textFieldText))
+                                loadSubjects(context, subjectList)
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            contentColor = MaterialTheme.colors.background,
+                            backgroundColor = colorResource(id = R.color.foreground_view)
+                        )
+                    ) {
+                        Text(text = stringResource(R.string.subject_addition_save_button))
                     }
                 },
                 dismissButton = {
-                    OutlinedButton(onClick = { dialogIsVisibleFlag.value = false }) {
-                        Text(text = stringResource(R.string.subject_addition_cancel_button_text))
+                    OutlinedButton(
+                        onClick = { dialogIsVisibleFlag.value = false },
+                        colors = ButtonDefaults.buttonColors(
+                            contentColor = colorResource(id = R.color.foreground_view),
+                            backgroundColor = MaterialTheme.colors.background
+                        )
+                    ) {
+                        Text(text = stringResource(R.string.subject_addition_cancel_button))
                     }
                 }
             )
