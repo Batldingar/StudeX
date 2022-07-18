@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">StudeX</string>
     <string name="subject_addition_dialog_title">Please enter a name!</string>
-    <string name="subject_addition_save_button_text">Save</string>
-    <string name="subject_addition_cancel_button_text">Cancel</string>
+    <string name="subject_addition_save_button">Save</string>
+    <string name="subject_addition_cancel_button">Cancel</string>
     <string name="subject_pdf_list_title">Available PDFs</string>
     <string name="subject_pdf_list_error">No PDFs available</string>
+    <string name="detail_view_bottom_navigation_overview">Overview</string>
+    <string name="detail_view_bottom_navigation_upload">Upload PDF</string>
+    <string name="detail_view_bottom_navigation_questions">Questions</string>
 </resources>

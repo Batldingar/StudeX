@@ -3,21 +3,16 @@ package at.hagenberg.studex
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import at.hagenberg.studex.core.Subject
 import at.hagenberg.studex.proxy.AppDatabase
 import at.hagenberg.studex.proxy.SubjectDao
-import kotlinx.coroutines.asExecutor
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.TestCoroutineScope
 import org.junit.After
-
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-
-import org.junit.Assert.*
-import org.junit.Before
 import java.io.IOException
 
 /**

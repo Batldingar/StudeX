@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import at.hagenberg.studex.core.Question
-import at.hagenberg.studex.core.QuestionsOrderedByPDF
 
 @Dao
 interface QuestionDao {

@@ -31,36 +31,43 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * A composable consisting of:
+ * // TODO
+ * - a button for subject deletion
+ * - a list of all corresponding pdfs
+ * @param subjectID The subject id
+ * @param navHostController The navigation host controller
+ */
 @Composable
-fun QuestionView(subjectId: String?, navController: NavHostController) {
+fun QuestionView(subjectID: String?, navHostController: NavHostController) {
+    if (subjectID == null) return
 
-    if (subjectId == null) return
-    var context = LocalContext.current
+    val context = LocalContext.current
+    val questionList = remember { mutableStateListOf<QuestionsOrderedByPDF>() }
+    val questionListOrderedByPDF = remember { mutableStateMapOf<PDF, List<Question>>() }
 
-    var listOfQuestions = remember { mutableStateListOf<QuestionsOrderedByPDF>() }
-    var listOfQuestionsOrderedByPdf = remember { mutableStateMapOf<PDF, List<Question>>() }
-    if (listOfQuestions.size == 0) {
-        getQuestions(context, listOfQuestionsOrderedByPdf, Integer.parseInt(subjectId))
+    if (questionList.size == 0) {
+        getQuestions(context, questionListOrderedByPDF, Integer.parseInt(subjectID))
     }
 
-
     Scaffold(bottomBar = {
-        BottomNavigation(
-            navController = navController,
+        BottomNavigationBar(
+            navHostController = navHostController,
             context = context,
-            subjectId = subjectId
+            subjectID = subjectID
         )
     },
         floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
-            FloatingActionButton(onClick = { navController.navigate("newQuestion/${subjectId}") }) {
+            FloatingActionButton(onClick = { navHostController.navigate("newQuestion/${subjectID}") }) {
                 Icon(Icons.Filled.Add, "")
             }
         }) {
 
 
         Column(modifier = Modifier.padding(start = 8.dp)) {
-            listOfQuestionsOrderedByPdf.forEach { entry ->
+            questionListOrderedByPDF.forEach { entry ->
                 Text(
                     entry.key.document_name,
                     fontWeight = FontWeight.Bold,
@@ -268,5 +275,4 @@ private fun saveQuestionForSubject(
             navController.popBackStack()
         }
     }
-
 }

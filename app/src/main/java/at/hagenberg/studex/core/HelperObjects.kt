@@ -1,7 +1,5 @@
 package at.hagenberg.studex.core
 
-import androidx.room.ColumnInfo
-
 data class QuestionsOrderedByPDF(
     var id: Int,
     var question: String,
