@@ -102,6 +102,7 @@ fun SubjectView(navController: NavController) {
                 title = {
                     Text(
                         text = stringResource(R.string.subject_addition_dialog_title),
+                        fontWeight = FontWeight.Medium,
                         color = colorResource(id = R.color.text_dark)
                     )
                 },
@@ -112,8 +113,11 @@ fun SubjectView(navController: NavController) {
                         colors = TextFieldDefaults.textFieldColors(
                             textColor = colorResource(id = R.color.text_dark),
                             focusedIndicatorColor = colorResource(id = R.color.background_view),
-                            cursorColor = colorResource(id = R.color.background_view)
-                        )
+                            cursorColor = colorResource(id = R.color.background_view),
+                            focusedLabelColor = colorResource(id = R.color.background_view)
+                        ),
+                        placeholder = { Text(stringResource(R.string.subject_addition_subject_placeholder)) },
+                        label = { Text(stringResource(R.string.subject_addition_subject_label)) }
                     )
                 },
                 confirmButton = {
