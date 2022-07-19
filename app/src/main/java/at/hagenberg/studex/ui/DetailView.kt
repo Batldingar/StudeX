@@ -32,13 +32,15 @@ import kotlinx.coroutines.withContext
 /**
  * A composable consisting of:
  * - a button for subject deletion
- * - a list of all corresponding pdfs
+ * - a list of all subject corresponding pdfs
+ * - a bottom navigation bar
  * @param subjectID The subject id
  * @param navHostController The navigation host controller
  */
 @Composable
 fun DetailView(subjectID: String?, navHostController: NavHostController) {
     if (subjectID == null) return
+
     val context = LocalContext.current
     val subjectDetails = remember { mutableStateOf<Subject?>(null) }
     val pdfList = remember { mutableStateListOf<PDF>() }
@@ -76,7 +78,7 @@ fun DetailView(subjectID: String?, navHostController: NavHostController) {
                 OutlinedButton(
                     colors = ButtonDefaults.outlinedButtonColors(
                         contentColor = colorResource(
-                            id = R.color.signal_view
+                            id = R.color.button_view
                         ), backgroundColor = MaterialTheme.colors.background
                     ), onClick = {
                         subjectDetails.value?.let {

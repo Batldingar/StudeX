@@ -8,4 +8,5 @@
     <string name="detail_view_bottom_navigation_overview">Overview</string>
     <string name="detail_view_bottom_navigation_upload">Upload PDF</string>
     <string name="detail_view_bottom_navigation_questions">Questions</string>
+    <string name="subject_view_title">Subject Overview</string>
 </resources>

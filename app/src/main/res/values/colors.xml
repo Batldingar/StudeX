@@ -2,7 +2,7 @@
 <resources>
     <color name="foreground_view">#0b4f6c</color>
     <color name="background_view">#01baef</color>
-    <color name="signal_view">#b80c09</color>
+    <color name="button_view">#b80c09</color>
     <color name="text_light">#fbfbff</color>
     <color name="text_dark">#040f16</color>
 </resources>
