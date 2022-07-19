@@ -2,6 +2,7 @@ package at.hagenberg.studex.ui
 
 import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -50,32 +51,44 @@ fun SubjectView(navController: NavController) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { dialogIsVisibleFlag.value = true },
-                backgroundColor = colorResource(id = R.color.foreground_view),
-                contentColor = colorResource(id = R.color.text_light)
+                contentColor = MaterialTheme.colors.background,
+                backgroundColor = colorResource(id = R.color.button_view)
             ) {
                 Icon(Icons.Filled.Add, "")
             }
         },
-        floatingActionButtonPosition = FabPosition.Center
+        floatingActionButtonPosition = FabPosition.End
     ) {
-        LazyColumn(
-            modifier = Modifier.padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            itemsIndexed(items = subjectList) { _, subject ->
-                Card(modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    backgroundColor = colorResource(id = R.color.foreground_view),
-                    onClick = { navController.navigate("${MainActivity.Companion.SUBJECT_DETAIL_PREFIX}${subject.id}") }
-                ) {
-                    subject.name?.let { it1 ->
-                        Text(
-                            text = it1, modifier = Modifier.padding(16.dp),
-                            textAlign = TextAlign.Center,
-                            color = colorResource(id = R.color.text_light),
-                            fontWeight = FontWeight.Bold
-                        )
+            Text(
+                text = stringResource(R.string.subject_view_title),
+                modifier = Modifier.padding(20.dp),
+                textAlign = TextAlign.Center,
+                color = colorResource(id = R.color.text_dark),
+                fontWeight = FontWeight.Bold
+            )
+            LazyColumn(
+                modifier = Modifier.padding(24.dp, 0.dp, 24.dp, 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                itemsIndexed(items = subjectList) { _, subject ->
+                    Card(modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        backgroundColor = colorResource(id = R.color.foreground_view),
+                        onClick = { navController.navigate("${MainActivity.Companion.SUBJECT_DETAIL_PREFIX}${subject.id}") }
+                    ) {
+                        subject.name?.let { it1 ->
+                            Text(
+                                text = it1, modifier = Modifier.padding(16.dp),
+                                textAlign = TextAlign.Center,
+                                color = colorResource(id = R.color.text_light),
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
                 }
             }
@@ -93,7 +106,8 @@ fun SubjectView(navController: NavController) {
                     )
                 },
                 text = {
-                    TextField(value = textFieldText,
+                    TextField(
+                        value = textFieldText,
                         onValueChange = { textFieldText = it },
                         colors = TextFieldDefaults.textFieldColors(
                             textColor = colorResource(id = R.color.text_dark),
@@ -114,7 +128,7 @@ fun SubjectView(navController: NavController) {
                         },
                         colors = ButtonDefaults.buttonColors(
                             contentColor = MaterialTheme.colors.background,
-                            backgroundColor = colorResource(id = R.color.foreground_view)
+                            backgroundColor = colorResource(id = R.color.button_view)
                         )
                     ) {
                         Text(text = stringResource(R.string.subject_addition_save_button))
@@ -124,7 +138,7 @@ fun SubjectView(navController: NavController) {
                     OutlinedButton(
                         onClick = { dialogIsVisibleFlag.value = false },
                         colors = ButtonDefaults.buttonColors(
-                            contentColor = colorResource(id = R.color.foreground_view),
+                            contentColor = colorResource(id = R.color.button_view),
                             backgroundColor = MaterialTheme.colors.background
                         )
                     ) {

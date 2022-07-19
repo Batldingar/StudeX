@@ -10,10 +10,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import at.hagenberg.studex.R
 import at.hagenberg.studex.core.PDF
 import at.hagenberg.studex.proxy.AppDatabase
@@ -32,14 +34,15 @@ import kotlinx.coroutines.withContext
  */
 @Composable
 fun BottomNavigationBar(context: Context, navHostController: NavHostController, subjectID: String) {
-    var selectedBottomNavigationItemID by remember { mutableStateOf(0) }
-
     androidx.compose.material.BottomNavigation(
         contentColor = MaterialTheme.colors.background, backgroundColor = colorResource(
             id = R.color.foreground_view
         )
     ) {
-        BottomNavigationItem(selected = selectedBottomNavigationItemID == 0,
+        val backStackEntry by navHostController.currentBackStackEntryAsState()
+        val currentRoute = backStackEntry?.destination?.route
+
+        BottomNavigationItem(selected = currentRoute == MainActivity.SUBJECT_DETAIL_ROUTE,
             onClick = {
                 if (navHostController.popBackStack()) {
                     navHostController.navigate("${MainActivity.SUBJECT_DETAIL_PREFIX}${subjectID}")
@@ -47,7 +50,7 @@ fun BottomNavigationBar(context: Context, navHostController: NavHostController, 
             },
             label = { Text(stringResource(R.string.detail_view_bottom_navigation_overview)) },
             icon = { Icon(Icons.Filled.Home, contentDescription = null) })
-        BottomNavigationItem(selected = selectedBottomNavigationItemID == 1,
+        BottomNavigationItem(selected = false,
             onClick = {
                 addDummyPDF(context, Integer.parseInt(subjectID))
                 // TODO: Position the following line after navigating to and finishing the upload
@@ -57,7 +60,7 @@ fun BottomNavigationBar(context: Context, navHostController: NavHostController, 
             },
             label = { Text(stringResource(R.string.detail_view_bottom_navigation_upload)) },
             icon = { Icon(Icons.Filled.Add, contentDescription = null) })
-        BottomNavigationItem(selected = selectedBottomNavigationItemID == 2,
+        BottomNavigationItem(selected = currentRoute == MainActivity.QUESTION_ROUTE,
             onClick = {
                 if (navHostController.popBackStack()) {
                     navHostController.navigate("${MainActivity.QUESTION_PREFIX}${subjectID}")
