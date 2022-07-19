@@ -29,8 +29,8 @@ class MainActivity : ComponentActivity() {
         const val ITEM_ID = "item_id"
         const val QUESTION_PREFIX = "question_screen/"
         const val QUESTION_ROUTE = "$QUESTION_PREFIX{$ITEM_ID}"
-        const val QUESTION__CREATION_PREFIX = "question_creation_screen/"
-        const val QUESTION_CREATION_ROUTE = "$QUESTION__CREATION_PREFIX{$ITEM_ID}"
+        const val QUESTION_CREATION_PREFIX = "question_creation_screen/"
+        const val QUESTION_CREATION_ROUTE = "$QUESTION_CREATION_PREFIX{$ITEM_ID}"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,7 +80,6 @@ fun NavigationComponent(navHostController: NavHostController) {
         }
 
         composable(MainActivity.PDF_SELECTION_ROUTE) { PDFView() }
-        //TODO: Cleanup of the following lines
         composable(MainActivity.QUESTION_ROUTE) { backStackEntry ->
             QuestionView(
                 subjectID = backStackEntry.arguments?.getString(MainActivity.ITEM_ID),
@@ -91,7 +90,7 @@ fun NavigationComponent(navHostController: NavHostController) {
         composable(MainActivity.QUESTION_CREATION_ROUTE) { backStackEntry ->
             NewQuestionView(
                 backStackEntry.arguments?.getString(MainActivity.ITEM_ID),
-                navController = navHostController
+                navHostController = navHostController
             )
         }
     }

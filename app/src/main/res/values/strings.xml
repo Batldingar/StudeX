@@ -1,12 +1,24 @@
 <resources>
     <string name="app_name">StudeX</string>
-    <string name="subject_addition_dialog_title">Please enter a name!</string>
+    <string name="subject_addition_dialog_title">New Subject</string>
+    <string name="subject_addition_text_field_label">Subject</string>
     <string name="subject_addition_save_button">Save</string>
     <string name="subject_addition_cancel_button">Cancel</string>
+    <string name="subject_addition_subject_placeholder">E.g., Mathematics</string>
+    <string name="subject_addition_subject_label">Name</string>
     <string name="subject_pdf_list_title">Available PDFs</string>
     <string name="subject_pdf_list_error">No PDFs available</string>
     <string name="detail_view_bottom_navigation_overview">Overview</string>
     <string name="detail_view_bottom_navigation_upload">Upload PDF</string>
     <string name="detail_view_bottom_navigation_questions">Questions</string>
     <string name="subject_view_title">Subject Overview</string>
+    <string name="question_creation_save_successful">Question was saved successfully!</string>
+    <string name="question_creation_save_button">Save</string>
+    <string name="question_creation_cancel_button">Cancel</string>
+    <string name="question_creation_title_question">New Question</string>
+    <string name="question_creation_title_difficulty">Difficulty</string>
+    <string name="question_creation_question_placeholder">E.g., What is the result of 4+1?</string>
+    <string name="question_creation_question_label">Question</string>
+    <string name="question_creation_answer_placeholder">E.g., The rating that StudeX deserves!</string>
+    <string name="question_creation_answer_label">Answer</string>
 </resources>
