@@ -3,13 +3,11 @@ package at.hagenberg.studex.ui
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import at.hagenberg.studex.core.PDF
@@ -33,7 +31,7 @@ fun UploadView(subjectID: Int?, navHostController: NavHostController) {
 
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
-            if(uri != null) {
+            if (uri != null) {
                 uploadPDF(context, getFileName(context, uri), uri.toString(), subjectID)
             }
 
@@ -70,11 +68,11 @@ private fun uploadPDF(context: Context, documentName: String, fileURI: String, s
  * @param context The current context
  * @param uri The uri corresponding to the file with the name to be retrieved
  */
-fun getFileName(context: Context, uri: Uri) : String{
-    var fileName : String = "Unknown"
+fun getFileName(context: Context, uri: Uri): String {
+    var fileName: String = "Unknown"
     val cursor = context.contentResolver.query(uri, null, null, null, null)
 
-    if(cursor != null) {
+    if (cursor != null) {
         val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
         cursor.moveToFirst()
         fileName = cursor.getString(nameIndex)

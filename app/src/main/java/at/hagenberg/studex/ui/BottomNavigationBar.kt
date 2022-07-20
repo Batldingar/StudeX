@@ -1,6 +1,7 @@
 package at.hagenberg.studex.ui
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -40,6 +41,7 @@ fun BottomNavigationBar(context: Context, navHostController: NavHostController, 
                 if (navHostController.popBackStack()) {
                     navHostController.navigate("${MainActivity.SUBJECT_DETAIL_PREFIX}${subjectID}")
                 }
+                Log.d("Tag", "${MainActivity.SUBJECT_DETAIL_PREFIX}${subjectID}")
             },
             label = { Text(stringResource(R.string.detail_view_bottom_navigation_overview)) },
             icon = { Icon(Icons.Filled.Home, contentDescription = null) })

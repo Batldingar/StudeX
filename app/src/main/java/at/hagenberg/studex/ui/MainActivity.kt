@@ -74,29 +74,36 @@ fun NavigationComponent(navHostController: NavHostController) {
 
         composable(MainActivity.SUBJECT_DETAIL_ROUTE) { backStackEntry ->
             DetailView(
-                backStackEntry.arguments?.getString(MainActivity.SUBJECT_ID)
-                    ?.let { Integer.parseInt(it) },
+                subjectID = Integer.parseInt(
+                    backStackEntry.arguments?.getString(MainActivity.SUBJECT_ID).toString()
+                ),
                 navHostController = navHostController
             )
         }
 
         composable(MainActivity.PDF_UPLOAD_ROUTE) { backStackEntry ->
             UploadView(
-                subjectID = backStackEntry.arguments?.getInt(MainActivity.SUBJECT_ID),
+                subjectID = Integer.parseInt(
+                    backStackEntry.arguments?.getString(MainActivity.SUBJECT_ID).toString()
+                ),
                 navHostController = navHostController
             )
         }
 
         composable(MainActivity.QUESTION_ROUTE) { backStackEntry ->
             QuestionView(
-                subjectID = backStackEntry.arguments?.getInt(MainActivity.SUBJECT_ID),
+                subjectID = Integer.parseInt(
+                    backStackEntry.arguments?.getString(MainActivity.SUBJECT_ID).toString()
+                ),
                 navHostController = navHostController
             )
         }
 
         composable(MainActivity.QUESTION_CREATION_ROUTE) { backStackEntry ->
             NewQuestionView(
-                backStackEntry.arguments?.getInt(MainActivity.SUBJECT_ID),
+                subjectID = Integer.parseInt(
+                    backStackEntry.arguments?.getString(MainActivity.SUBJECT_ID).toString()
+                ),
                 navHostController = navHostController
             )
         }
