@@ -25,12 +25,12 @@ class MainActivity : ComponentActivity() {
         const val SUBJECT_ID = "subject_id"
         const val SUBJECT_DETAIL_PREFIX = "subject_detail_screen/"
         const val SUBJECT_DETAIL_ROUTE = "$SUBJECT_DETAIL_PREFIX{$SUBJECT_ID}"
-        const val PDF_SELECTION_ROUTE = "pdf_selection_screen"
-        const val ITEM_ID = "item_id"
+        const val PDF_UPLOAD_PREFIX = "pdf_upload_screen/"
+        const val PDF_UPLOAD_ROUTE = "$PDF_UPLOAD_PREFIX{$SUBJECT_ID}"
         const val QUESTION_PREFIX = "question_screen/"
-        const val QUESTION_ROUTE = "$QUESTION_PREFIX{$ITEM_ID}"
+        const val QUESTION_ROUTE = "$QUESTION_PREFIX{$SUBJECT_ID}"
         const val QUESTION_CREATION_PREFIX = "question_creation_screen/"
-        const val QUESTION_CREATION_ROUTE = "$QUESTION_CREATION_PREFIX{$ITEM_ID}"
+        const val QUESTION_CREATION_ROUTE = "$QUESTION_CREATION_PREFIX{$SUBJECT_ID}"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,22 +74,36 @@ fun NavigationComponent(navHostController: NavHostController) {
 
         composable(MainActivity.SUBJECT_DETAIL_ROUTE) { backStackEntry ->
             DetailView(
-                backStackEntry.arguments?.getString(MainActivity.SUBJECT_ID),
+                subjectID = Integer.parseInt(
+                    backStackEntry.arguments?.getString(MainActivity.SUBJECT_ID).toString()
+                ),
                 navHostController = navHostController
             )
         }
 
-        composable(MainActivity.PDF_SELECTION_ROUTE) { PDFView() }
+        composable(MainActivity.PDF_UPLOAD_ROUTE) { backStackEntry ->
+            UploadView(
+                subjectID = Integer.parseInt(
+                    backStackEntry.arguments?.getString(MainActivity.SUBJECT_ID).toString()
+                ),
+                navHostController = navHostController
+            )
+        }
+
         composable(MainActivity.QUESTION_ROUTE) { backStackEntry ->
             QuestionView(
-                subjectID = backStackEntry.arguments?.getString(MainActivity.ITEM_ID),
+                subjectID = Integer.parseInt(
+                    backStackEntry.arguments?.getString(MainActivity.SUBJECT_ID).toString()
+                ),
                 navHostController = navHostController
             )
         }
 
         composable(MainActivity.QUESTION_CREATION_ROUTE) { backStackEntry ->
             NewQuestionView(
-                backStackEntry.arguments?.getString(MainActivity.ITEM_ID),
+                subjectID = Integer.parseInt(
+                    backStackEntry.arguments?.getString(MainActivity.SUBJECT_ID).toString()
+                ),
                 navHostController = navHostController
             )
         }

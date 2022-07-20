@@ -38,14 +38,14 @@ import kotlinx.coroutines.withContext
  * @param navHostController The navigation host controller
  */
 @Composable
-fun DetailView(subjectID: String?, navHostController: NavHostController) {
+fun DetailView(subjectID: Int?, navHostController: NavHostController) {
     if (subjectID == null) return
 
     val context = LocalContext.current
     val subjectDetails = remember { mutableStateOf<Subject?>(null) }
     val pdfList = remember { mutableStateListOf<PDF>() }
 
-    loadSubjectDetails(context, Integer.parseInt(subjectID), subjectDetails, pdfList)
+    loadSubjectDetails(context, subjectID, subjectDetails, pdfList)
 
     Scaffold(topBar = {
         TopAppBar(backgroundColor = colorResource(id = R.color.foreground_view)) {
@@ -66,7 +66,6 @@ fun DetailView(subjectID: String?, navHostController: NavHostController) {
             )
         }) {
         Column(modifier = Modifier.padding(start = 8.dp)) {
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -74,7 +73,6 @@ fun DetailView(subjectID: String?, navHostController: NavHostController) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-
                 OutlinedButton(
                     colors = ButtonDefaults.outlinedButtonColors(
                         contentColor = colorResource(
@@ -173,6 +171,6 @@ private fun deleteSubject(
 @Composable
 fun DetailViewPreview() {
     MaterialTheme {
-        DetailView("", rememberNavController())
+        DetailView(0, rememberNavController())
     }
 }
