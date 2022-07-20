@@ -1,6 +1,7 @@
 package at.hagenberg.studex.ui
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -79,7 +80,7 @@ fun SubjectView(navController: NavController) {
                     Card(modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
                         backgroundColor = colorResource(id = R.color.foreground_view),
-                        onClick = { navController.navigate("${MainActivity.Companion.SUBJECT_DETAIL_PREFIX}${subject.id}") }
+                        onClick = { navController.navigate("${MainActivity.SUBJECT_DETAIL_PREFIX}${subject.id}") }
                     ) {
                         subject.name?.let { it1 ->
                             Text(

@@ -37,7 +37,7 @@ import kotlinx.coroutines.withContext
  * @param navHostController The navigation host controller
  */
 @Composable
-fun NewQuestionView(subjectID: String?, navHostController: NavHostController) {
+fun NewQuestionView(subjectID: Int?, navHostController: NavHostController) {
     if (subjectID == null) return
 
     val context = LocalContext.current
@@ -49,7 +49,7 @@ fun NewQuestionView(subjectID: String?, navHostController: NavHostController) {
     var expandedFlag by remember { mutableStateOf(false) }
     var selectedPDF by remember { mutableStateOf<PDF?>(null) }
 
-    loadSubjectPDFs(context, Integer.parseInt(subjectID), pdfList)
+    loadSubjectPDFs(context, subjectID, pdfList)
 
     Scaffold(
         bottomBar = {

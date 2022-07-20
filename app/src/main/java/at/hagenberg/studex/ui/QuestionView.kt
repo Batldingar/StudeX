@@ -38,14 +38,14 @@ import kotlinx.coroutines.withContext
  * @param navHostController The navigation host controller
  */
 @Composable
-fun QuestionView(subjectID: String?, navHostController: NavHostController) {
+fun QuestionView(subjectID: Int?, navHostController: NavHostController) {
     if (subjectID == null) return
 
     val context = LocalContext.current
     val pdfQuestionMap = remember { mutableStateMapOf<PDF, List<Question>>() }
 
     if (pdfQuestionMap.size == 0) {
-        loadQuestions(context, pdfQuestionMap, Integer.parseInt(subjectID))
+        loadQuestions(context, pdfQuestionMap, subjectID)
     }
 
     Scaffold(bottomBar = {

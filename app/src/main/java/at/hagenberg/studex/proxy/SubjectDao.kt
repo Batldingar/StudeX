@@ -11,8 +11,8 @@ interface SubjectDao {
     @Query("SELECT * FROM subjects")
     fun getAll(): List<Subject>
 
-    @Query("SELECT * FROM subjects WHERE subjects.subject_id = :subjectId")
-    fun getSubjectDetails(subjectId: Int): Subject
+    @Query("SELECT * FROM subjects WHERE subjects.subject_id = :subjectID")
+    fun getSubjectDetails(subjectID: Int): Subject
 
     @Insert
     fun insertSubject(vararg subject: Subject)
