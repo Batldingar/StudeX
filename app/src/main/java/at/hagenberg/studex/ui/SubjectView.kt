@@ -73,7 +73,7 @@ fun SubjectView(navController: NavController) {
             LazyColumn(
                 modifier = Modifier.padding(24.dp, 0.dp, 24.dp, 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 itemsIndexed(items = subjectList) { _, subject ->
                     Card(modifier = Modifier.fillMaxWidth(),

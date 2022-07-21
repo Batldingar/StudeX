@@ -4,9 +4,11 @@ import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
@@ -37,6 +39,7 @@ import kotlinx.coroutines.withContext
  * @param subjectID The subject id
  * @param navHostController The navigation host controller
  */
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DetailView(subjectID: Int?, navHostController: NavHostController) {
     if (subjectID == null) return
@@ -65,30 +68,32 @@ fun DetailView(subjectID: Int?, navHostController: NavHostController) {
                 subjectID = subjectID
             )
         }) {
-        Column(modifier = Modifier.padding(start = 8.dp)) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp, top = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+        Column(
+            modifier = Modifier.padding(
+                bottom = it.calculateBottomPadding(),
+                start = 8.dp,
+                end = 8.dp
+            )
+        ) {
+            OutlinedButton(
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = colorResource(
+                        id = R.color.button_view
+                    ), backgroundColor = MaterialTheme.colors.background
+                ),
+                onClick = {
+                    subjectDetails.value?.let {
+                        deleteSubject(
+                            context,
+                            it,
+                            navHostController
+                        )
+                    }
+                },
+                modifier = Modifier.padding(bottom = 8.dp, top = 8.dp),
             ) {
-                OutlinedButton(
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = colorResource(
-                            id = R.color.button_view
-                        ), backgroundColor = MaterialTheme.colors.background
-                    ), onClick = {
-                        subjectDetails.value?.let {
-                            deleteSubject(
-                                context,
-                                it,
-                                navHostController
-                            )
-                        }
-                    }) {
-                    Icon(Icons.Filled.Delete, contentDescription = "")
-                }
+                Icon(Icons.Filled.Delete, contentDescription = "")
+                Text("Delete Subject")
             }
 
             if (!pdfList.isEmpty()) {
@@ -99,14 +104,39 @@ fun DetailView(subjectID: Int?, navHostController: NavHostController) {
                     color = colorResource(id = R.color.text_dark)
                 )
 
-                LazyColumn() {
+                LazyColumn(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                ) {
                     itemsIndexed(items = pdfList) { index, pdf ->
-                        Text(
-                            pdf.document_name,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = colorResource(id = R.color.text_dark)
-                        )
+                        Card(modifier = Modifier
+                            .fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp),
+                            backgroundColor = colorResource(id = R.color.foreground_view),
+                            onClick = {
+                                // TODO
+                            }
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    Icons.Filled.Edit,
+                                    contentDescription = "",
+                                    tint = colorResource(
+                                        id = R.color.text_light
+                                    )
+                                )
+                                Spacer(Modifier.width(4.dp))
+                                Text(
+                                    pdf.document_name,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = colorResource(id = R.color.text_light)
+                                )
+                            }
+                        }
                     }
                 }
             } else {
