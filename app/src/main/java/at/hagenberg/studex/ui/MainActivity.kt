@@ -22,15 +22,17 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         const val SUBJECT_OVERVIEW_ROUTE = "subject_overview_screen"
-        const val SUBJECT_ID = "subject_id"
+        const val PARAMETER_ID = "parameter_id"
         const val SUBJECT_DETAIL_PREFIX = "subject_detail_screen/"
-        const val SUBJECT_DETAIL_ROUTE = "$SUBJECT_DETAIL_PREFIX{$SUBJECT_ID}"
+        const val SUBJECT_DETAIL_ROUTE = "$SUBJECT_DETAIL_PREFIX{$PARAMETER_ID}"
         const val PDF_UPLOAD_PREFIX = "pdf_upload_screen/"
-        const val PDF_UPLOAD_ROUTE = "$PDF_UPLOAD_PREFIX{$SUBJECT_ID}"
+        const val PDF_UPLOAD_ROUTE = "$PDF_UPLOAD_PREFIX{$PARAMETER_ID}"
         const val QUESTION_PREFIX = "question_screen/"
-        const val QUESTION_ROUTE = "$QUESTION_PREFIX{$SUBJECT_ID}"
+        const val QUESTION_ROUTE = "$QUESTION_PREFIX{$PARAMETER_ID}"
         const val QUESTION_CREATION_PREFIX = "question_creation_screen/"
-        const val QUESTION_CREATION_ROUTE = "$QUESTION_CREATION_PREFIX{$SUBJECT_ID}"
+        const val QUESTION_CREATION_ROUTE = "$QUESTION_CREATION_PREFIX{$PARAMETER_ID}"
+        const val PDF_DETAIL_PREFIX = "pdf_detail_screen/"
+        const val PDF_DETAIL_ROUTE = "$PDF_DETAIL_PREFIX{$PARAMETER_ID}"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,7 +77,7 @@ fun NavigationComponent(navHostController: NavHostController) {
         composable(MainActivity.SUBJECT_DETAIL_ROUTE) { backStackEntry ->
             DetailView(
                 subjectID = Integer.parseInt(
-                    backStackEntry.arguments?.getString(MainActivity.SUBJECT_ID).toString()
+                    backStackEntry.arguments?.getString(MainActivity.PARAMETER_ID).toString()
                 ),
                 navHostController = navHostController
             )
@@ -84,7 +86,7 @@ fun NavigationComponent(navHostController: NavHostController) {
         composable(MainActivity.PDF_UPLOAD_ROUTE) { backStackEntry ->
             UploadView(
                 subjectID = Integer.parseInt(
-                    backStackEntry.arguments?.getString(MainActivity.SUBJECT_ID).toString()
+                    backStackEntry.arguments?.getString(MainActivity.PARAMETER_ID).toString()
                 ),
                 navHostController = navHostController
             )
@@ -93,7 +95,7 @@ fun NavigationComponent(navHostController: NavHostController) {
         composable(MainActivity.QUESTION_ROUTE) { backStackEntry ->
             QuestionView(
                 subjectID = Integer.parseInt(
-                    backStackEntry.arguments?.getString(MainActivity.SUBJECT_ID).toString()
+                    backStackEntry.arguments?.getString(MainActivity.PARAMETER_ID).toString()
                 ),
                 navHostController = navHostController
             )
@@ -102,7 +104,16 @@ fun NavigationComponent(navHostController: NavHostController) {
         composable(MainActivity.QUESTION_CREATION_ROUTE) { backStackEntry ->
             NewQuestionView(
                 subjectID = Integer.parseInt(
-                    backStackEntry.arguments?.getString(MainActivity.SUBJECT_ID).toString()
+                    backStackEntry.arguments?.getString(MainActivity.PARAMETER_ID).toString()
+                ),
+                navHostController = navHostController
+            )
+        }
+
+        composable(MainActivity.PDF_DETAIL_ROUTE) { backStackEntry ->
+            PDFView(
+                pdfID = Integer.parseInt(
+                    backStackEntry.arguments?.getString(MainActivity.PARAMETER_ID).toString()
                 ),
                 navHostController = navHostController
             )

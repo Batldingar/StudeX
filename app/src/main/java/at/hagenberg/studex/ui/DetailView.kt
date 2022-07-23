@@ -113,9 +113,7 @@ fun DetailView(subjectID: Int?, navHostController: NavHostController) {
                             .fillMaxWidth(),
                             shape = RoundedCornerShape(12.dp),
                             backgroundColor = colorResource(id = R.color.foreground_view),
-                            onClick = {
-                                // TODO
-                            }
+                            onClick = { navHostController.navigate("${MainActivity.PDF_DETAIL_PREFIX}${pdf.id}") }
                         ) {
                             Row(
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),

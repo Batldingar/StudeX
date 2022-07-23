@@ -14,6 +14,9 @@ interface PDFDao {
     @Query("SELECT * FROM pdfs WHERE pdfs.subject_id = :subjectId")
     fun getPDFsForSubjectDao(subjectId: Int): List<PDF>
 
+    @Query("SELECT * FROM pdfs WHERE pdfs.pdf_id = :pdfID")
+    fun getPDF(pdfID: Int): PDF
+
     @Insert
     fun insertPDF(vararg pdf: PDF)
 }
