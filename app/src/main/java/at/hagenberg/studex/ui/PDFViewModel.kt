@@ -20,7 +20,8 @@ import java.io.IOException
  * A view model class for the PDFView
  */
 class PDFViewModel : ViewModel() {
-    val pageBitmap = MutableLiveData<ImageBitmap>()
+    val bitmapList = MutableLiveData<ArrayList<ImageBitmap>>()
+    val loadingProgress = MutableLiveData<Float>()
 
     /**
      * Loads the first page of a pdf file
@@ -37,10 +38,18 @@ class PDFViewModel : ViewModel() {
                     PDDocument.load(context.openFileInput(loadPDF(context, pdfID).persistent_name))
                 val renderer = PDFRenderer(document)
 
-                // Rendering an RGB image
-                pageBitmap.postValue(
-                    renderer.renderImage(0, 1F, ImageType.ARGB).asImageBitmap()
-                )
+                // Rendering ARGB images
+                val renderedBitmapList: ArrayList<ImageBitmap> = ArrayList()
+
+                for (i in 0 until document.numberOfPages) {
+                    loadingProgress.postValue(i.toFloat() / document.numberOfPages)
+                    renderedBitmapList.add(
+                        renderer.renderImage(i, 1F, ImageType.ARGB).asImageBitmap()
+                    )
+                }
+
+                bitmapList.postValue(renderedBitmapList)
+
             } catch (exception: IOException) {
                 exception.printStackTrace()
             }
