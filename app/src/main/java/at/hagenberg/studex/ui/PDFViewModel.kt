@@ -12,6 +12,7 @@ import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.rendering.ImageType
 import com.tom_roush.pdfbox.rendering.PDFRenderer
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -22,6 +23,7 @@ import java.io.IOException
 class PDFViewModel : ViewModel() {
     val bitmapList = MutableLiveData<ArrayList<ImageBitmap>>()
     val loadingProgress = MutableLiveData<Float>()
+    var document: PDDocument = PDDocument()
 
     /**
      * Loads the first page of a pdf file
@@ -34,7 +36,7 @@ class PDFViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 // Getting the document and a renderer
-                val document =
+                document =
                     PDDocument.load(context.openFileInput(loadPDF(context, pdfID).persistent_name))
                 val renderer = PDFRenderer(document)
 
@@ -42,11 +44,14 @@ class PDFViewModel : ViewModel() {
                 val renderedBitmapList: ArrayList<ImageBitmap> = ArrayList()
 
                 for (i in 0 until document.numberOfPages) {
+                    ensureActive()
                     loadingProgress.postValue(i.toFloat() / document.numberOfPages)
                     renderedBitmapList.add(
                         renderer.renderImage(i, 1F, ImageType.ARGB).asImageBitmap()
                     )
                 }
+
+                document.close()
 
                 bitmapList.postValue(renderedBitmapList)
 
@@ -67,5 +72,12 @@ class PDFViewModel : ViewModel() {
         pdfID: Int,
     ): PDF = withContext(Dispatchers.IO) {
         return@withContext AppDatabase.getInstance(context).pdfDao().getPDF(pdfID)
+    }
+
+    /**
+     * Closes all resources that need to be closed when exiting the overlying composable
+     */
+    fun onDispose() {
+        document.close()
     }
 }
