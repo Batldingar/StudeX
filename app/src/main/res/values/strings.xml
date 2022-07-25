@@ -23,4 +23,5 @@
     <string name="question_creation_answer_label">Answer</string>
     <string name="pdf_view_removal_selection">pages removed</string>
     <string name="pdf_view_new_stage_button">Add Stage</string>
+    <string name="select_pdf">Select PDF</string>
 </resources>

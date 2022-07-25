@@ -54,7 +54,7 @@ fun DetailView(subjectID: Int?, navHostController: NavHostController) {
         TopAppBar(backgroundColor = colorResource(id = R.color.foreground_view)) {
             subjectDetails.value?.name?.let {
                 Text(
-                    it, fontWeight = FontWeight.Bold, color = colorResource(
+                    it, fontWeight = FontWeight.Bold, fontSize = 20.sp,modifier = Modifier.padding(start = 8.dp), color = colorResource(
                         id = R.color.text_light
                     )
                 )
