@@ -21,4 +21,6 @@
     <string name="question_creation_question_label">Question</string>
     <string name="question_creation_answer_placeholder">E.g., The rating that StudeX deserves!</string>
     <string name="question_creation_answer_label">Answer</string>
+    <string name="pdf_view_removal_selection">pages removed</string>
+    <string name="pdf_view_new_stage_button">Add Stage</string>
 </resources>

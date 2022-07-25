@@ -21,9 +21,11 @@ import java.io.IOException
  * A view model class for the PDFView
  */
 class PDFViewModel : ViewModel() {
+    val pdf = MutableLiveData<PDF>()
+    val pageCount = MutableLiveData<Int>()
     val bitmapList = MutableLiveData<ArrayList<ImageBitmap>>()
     val loadingProgress = MutableLiveData<Float>()
-    var document: PDDocument = PDDocument()
+    private var document: PDDocument = PDDocument()
 
     /**
      * Loads the first page of a pdf file
@@ -34,10 +36,12 @@ class PDFViewModel : ViewModel() {
         if (pdfID == null) return
 
         viewModelScope.launch(Dispatchers.IO) {
+            val loadedPDF = loadPDF(context, pdfID)
+
             try {
                 // Getting the document and a renderer
                 document =
-                    PDDocument.load(context.openFileInput(loadPDF(context, pdfID).persistent_name))
+                    PDDocument.load(context.openFileInput(loadedPDF.persistent_name))
                 val renderer = PDFRenderer(document)
 
                 // Rendering ARGB images
@@ -57,6 +61,11 @@ class PDFViewModel : ViewModel() {
 
             } catch (exception: IOException) {
                 exception.printStackTrace()
+            }
+
+            withContext(Dispatchers.Main) {
+                pdf.value = loadedPDF
+                pageCount.value = document.numberOfPages
             }
         }
     }
