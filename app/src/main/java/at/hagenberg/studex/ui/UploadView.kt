@@ -35,7 +35,8 @@ fun UploadView(subjectID: Int?, navHostController: NavHostController) {
                 // Saving a copy of the selected file in app specific storage for path persistence
                 // Which is needed for longtime storage in database (uri would be temporary)
                 val fileName = getFileName(context, uri)
-                val persistentFileName = "$fileName${System.nanoTime()}"
+                val stage = 0
+                val persistentFileName = "$fileName${System.nanoTime()}${stage}"
                 val selectedPDFInputStream =
                     context.contentResolver.openInputStream(uri)?.readBytes()
 
@@ -45,7 +46,7 @@ fun UploadView(subjectID: Int?, navHostController: NavHostController) {
                     }
 
                     // Uploading the pdf to the database
-                    uploadPDF(context, fileName, persistentFileName, subjectID)
+                    UploadView.uploadPDF(context, fileName, persistentFileName, subjectID, stage)
                 }
             }
 
@@ -57,32 +58,40 @@ fun UploadView(subjectID: Int?, navHostController: NavHostController) {
     }
 }
 
-/**
- * Uploads a pdf file to the database asynchronously
- * @param context The current context
- * @param documentName The document's name
- * @param persistentName The document's persistent name in app specific storage
- * @param subjectID The document's corresponding subject
- */
-private fun uploadPDF(
-    context: Context,
-    documentName: String,
-    persistentName: String,
-    subjectID: Int
-) {
-    val newPDF =
-        PDF(
-            id = 0,
-            document_name = documentName,
-            persistent_name = persistentName,
-            subject_id = subjectID
-        )
+class UploadView {
 
-    CoroutineScope(Dispatchers.IO).launch {
-        AppDatabase.getInstance(context).pdfDao().insertPDF(newPDF)
+    companion object {
+        /**
+         * Uploads a pdf file to the database asynchronously
+         * @param context The current context
+         * @param documentName The document's name
+         * @param persistentName The document's persistent name in app specific storage
+         * @param subjectID The document's corresponding subject
+         * @param stage The document's stage
+         */
+        fun uploadPDF(
+            context: Context,
+            documentName: String,
+            persistentName: String,
+            subjectID: Int,
+            stage: Int
+        ) {
+            val newPDF =
+                PDF(
+                    document_name = documentName,
+                    persistent_name = persistentName,
+                    subject_id = subjectID,
+                    stage = stage
+                )
 
-        withContext(Dispatchers.Main) {
-            Toast.makeText(context, "PDF has been added successfully!", Toast.LENGTH_SHORT).show()
+            CoroutineScope(Dispatchers.IO).launch {
+                AppDatabase.getInstance(context).pdfDao().insertPDF(newPDF)
+
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "PDF has been added successfully!", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
         }
     }
 }

@@ -3,7 +3,6 @@ package at.hagenberg.studex.ui
 import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -77,7 +76,9 @@ fun SubjectView(navController: NavController) {
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 itemsIndexed(items = subjectList) { _, subject ->
-                    Card(modifier = Modifier.fillMaxWidth().heightIn(56.dp),
+                    Card(modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(56.dp),
                         shape = RoundedCornerShape(6.dp),
                         backgroundColor = colorResource(id = R.color.foreground_view),
                         onClick = { navController.navigate("${MainActivity.SUBJECT_DETAIL_PREFIX}${subject.id}") }

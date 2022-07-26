@@ -112,7 +112,7 @@ private fun loadQuestions(
 
         for (pdf in pdfList) {
             bufferMap[pdf] =
-                AppDatabase.getInstance(context).questionDao().getQuestionsForPdf(pdf.id)
+                AppDatabase.getInstance(context).questionDao().getQuestionsForPdf(pdf.document_name)
         }
 
         withContext(Dispatchers.Main) {

@@ -54,7 +54,11 @@ fun DetailView(subjectID: Int?, navHostController: NavHostController) {
         TopAppBar(backgroundColor = colorResource(id = R.color.foreground_view)) {
             subjectDetails.value?.name?.let {
                 Text(
-                    it, fontWeight = FontWeight.Bold, fontSize = 20.sp,modifier = Modifier.padding(start = 8.dp), color = colorResource(
+                    it,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(start = 8.dp),
+                    color = colorResource(
                         id = R.color.text_light
                     )
                 )
@@ -113,7 +117,7 @@ fun DetailView(subjectID: Int?, navHostController: NavHostController) {
                             .fillMaxWidth(),
                             shape = RoundedCornerShape(12.dp),
                             backgroundColor = colorResource(id = R.color.foreground_view),
-                            onClick = { navHostController.navigate("${MainActivity.PDF_DETAIL_PREFIX}${pdf.id}") }
+                            onClick = { navHostController.navigate("${MainActivity.PDF_DETAIL_PREFIX}${pdf.document_name},${subjectID}") }
                         ) {
                             Row(
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),

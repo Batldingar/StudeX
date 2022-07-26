@@ -29,33 +29,52 @@ import at.hagenberg.studex.core.PDF
  * - a top bar displaying pdf information
  * - an lazy column displaying a pdf
  * @param pdfID The pdf id
+ * @param subjectID The subject id
  * @param navHostController The navigation host controller
  * @param viewModel A pdf view model (populated automatically)
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PDFView(
-    pdfID: Int?,
+    pdfName: String?,
+    subjectID: Int,
     navHostController: NavHostController,
     viewModel: PDFViewModel = viewModel()
 ) {
     val context = LocalContext.current
     val pdf: PDF? by viewModel.pdf.observeAsState()
     val pageCount: Int? by viewModel.pageCount.observeAsState()
+    val stage: Int? by viewModel.stage.observeAsState()
+    val stageCount: Int? by viewModel.stageCount.observeAsState()
     val bitmapList: ArrayList<ImageBitmap>? by viewModel.bitmapList.observeAsState()
     val progress: Float? by viewModel.loadingProgress.observeAsState()
     val selectedCardList = remember { mutableStateListOf<Int>() }
 
     Scaffold(topBar = {
         TopAppBar(backgroundColor = colorResource(id = R.color.foreground_view)) {
-            pdf?.document_name?.let {
-                Text(
-                    it /*TODO: Add current stage*/,
-                    fontWeight = FontWeight.Bold,
-                    color = colorResource(
-                        id = R.color.text_light
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                pdf?.document_name?.let {
+                    Text(
+                        it,
+                        fontWeight = FontWeight.Bold,
+                        color = colorResource(
+                            id = R.color.text_light
+                        )
                     )
-                )
+                }
+                Spacer(modifier = Modifier.weight(1F))
+                stage?.let {
+                    Text(
+                        "Stage ${it + 1} / $stageCount",
+                        fontWeight = FontWeight.Bold,
+                        color = colorResource(
+                            id = R.color.text_light
+                        )
+                    )
+                }
             }
         }
     }, bottomBar = {
@@ -75,22 +94,30 @@ fun PDFView(
                 }
                 Spacer(modifier = Modifier.weight(1F))
                 if (pageCount != null) {
-                    Button(
-                        onClick = { /*TODO*/ },
-                        colors = ButtonDefaults.outlinedButtonColors(
-                            contentColor = colorResource(
-                                id = R.color.button_view
-                            ), backgroundColor = MaterialTheme.colors.background
-                        ),
-                    ) {
-                        Text(
-                            stringResource(R.string.pdf_view_new_stage_button),
-                            color = colorResource(
-                                id = R.color.button_view
+                    if (!selectedCardList.isEmpty()) {
+                        Button(
+                            onClick = {
+                                stageCount?.let {
+                                    viewModel.saveCutDocument(
+                                        context, pdfName, subjectID, it - 1, selectedCardList
+                                    )
+                                }
+                            },
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = colorResource(
+                                    id = R.color.button_view
+                                ), backgroundColor = MaterialTheme.colors.background
                             ),
+                        ) {
+                            Text(
+                                stringResource(R.string.pdf_view_new_stage_button),
+                                color = colorResource(
+                                    id = R.color.button_view
+                                ),
 
-                            )
-                        Icon(Icons.Filled.Add, contentDescription = "")
+                                )
+                            Icon(Icons.Filled.Add, contentDescription = "")
+                        }
                     }
                 }
             }
@@ -149,7 +176,7 @@ fun PDFView(
             }
 
             DisposableEffect(key1 = viewModel) {
-                viewModel.loadDocument(context, pdfID)
+                viewModel.loadDocument(context, pdfName, subjectID, 0)
                 onDispose { viewModel.onDispose() }
             }
         }
