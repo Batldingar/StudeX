@@ -8,7 +8,7 @@ import at.hagenberg.studex.core.PDF
 import at.hagenberg.studex.core.Question
 import at.hagenberg.studex.core.Subject
 
-@Database(entities = [Subject::class, Question::class, PDF::class], version = 3)
+@Database(entities = [Subject::class, Question::class, PDF::class], version = 4)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun subjectDao(): SubjectDao

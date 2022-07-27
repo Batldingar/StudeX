@@ -1,10 +1,7 @@
 package at.hagenberg.studex.ui
 
 import android.content.Context
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import at.hagenberg.studex.R
@@ -67,17 +65,21 @@ fun SubjectView(navController: NavController) {
                 text = stringResource(R.string.subject_view_title),
                 modifier = Modifier.padding(20.dp),
                 textAlign = TextAlign.Center,
+                fontSize = 20.sp,
                 color = colorResource(id = R.color.text_dark),
                 fontWeight = FontWeight.Bold
             )
+
             LazyColumn(
                 modifier = Modifier.padding(24.dp, 0.dp, 24.dp, 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 itemsIndexed(items = subjectList) { _, subject ->
-                    Card(modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp),
+                    Card(modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(56.dp),
+                        shape = RoundedCornerShape(6.dp),
                         backgroundColor = colorResource(id = R.color.foreground_view),
                         onClick = { navController.navigate("${MainActivity.SUBJECT_DETAIL_PREFIX}${subject.id}") }
                     ) {

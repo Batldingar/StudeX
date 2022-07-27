@@ -32,7 +32,22 @@ fun UploadView(subjectID: Int?, navHostController: NavHostController) {
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
             if (uri != null) {
-                uploadPDF(context, getFileName(context, uri), uri.toString(), subjectID)
+                // Saving a copy of the selected file in app specific storage for path persistence
+                // Which is needed for longtime storage in database (uri would be temporary)
+                val fileName = getFileName(context, uri)
+                val stage = 0
+                val persistentFileName = "$fileName${System.nanoTime()}${stage}"
+                val selectedPDFInputStream =
+                    context.contentResolver.openInputStream(uri)?.readBytes()
+
+                if (selectedPDFInputStream != null) {
+                    context.openFileOutput(persistentFileName, Context.MODE_PRIVATE).use {
+                        it.write(selectedPDFInputStream)
+                    }
+
+                    // Uploading the pdf to the database
+                    uploadPDF(context, fileName, persistentFileName, subjectID, stage)
+                }
             }
 
             navHostController.popBackStack()
@@ -47,18 +62,31 @@ fun UploadView(subjectID: Int?, navHostController: NavHostController) {
  * Uploads a pdf file to the database asynchronously
  * @param context The current context
  * @param documentName The document's name
- * @param fileURI The document's uri
+ * @param persistentName The document's persistent name in app specific storage
  * @param subjectID The document's corresponding subject
+ * @param stage The document's stage
  */
-private fun uploadPDF(context: Context, documentName: String, fileURI: String, subjectID: Int) {
+fun uploadPDF(
+    context: Context,
+    documentName: String,
+    persistentName: String,
+    subjectID: Int,
+    stage: Int
+) {
     val newPDF =
-        PDF(id = 0, document_name = documentName, file_uri = fileURI, subject_id = subjectID)
+        PDF(
+            document_name = documentName,
+            persistent_name = persistentName,
+            subject_id = subjectID,
+            stage = stage
+        )
 
     CoroutineScope(Dispatchers.IO).launch {
         AppDatabase.getInstance(context).pdfDao().insertPDF(newPDF)
 
         withContext(Dispatchers.Main) {
-            Toast.makeText(context, "PDF has been added successfully!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "PDF has been added successfully!", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 }

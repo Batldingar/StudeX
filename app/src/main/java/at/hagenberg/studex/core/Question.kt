@@ -11,5 +11,5 @@ data class Question(
     @ColumnInfo(name = "question") val question: String,
     @ColumnInfo(name = "answer") val answer: String,
     @ColumnInfo(name = "difficulty") val difficulty: Int,
-    @ColumnInfo(name = "pdf_id") val pdfId: Int?
+    @ColumnInfo(name = "pdf_name") val pdfName: String?
 )

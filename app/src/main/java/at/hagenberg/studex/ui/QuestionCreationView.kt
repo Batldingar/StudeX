@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
@@ -66,7 +66,7 @@ fun NewQuestionView(subjectID: Int?, navHostController: NavHostController) {
                                 question,
                                 answer,
                                 difficulty = Integer.parseInt(selectedOption),
-                                pdfId = selectedPDF?.id
+                                pdfName = selectedPDF?.document_name
                             ),
                             navHostController = navHostController
                         )
@@ -82,6 +82,7 @@ fun NewQuestionView(subjectID: Int?, navHostController: NavHostController) {
 
                 OutlinedButton(
                     onClick = { navHostController.popBackStack() },
+
                     colors = ButtonDefaults.buttonColors(
                         contentColor = colorResource(
                             id = R.color.button_view
@@ -97,7 +98,8 @@ fun NewQuestionView(subjectID: Int?, navHostController: NavHostController) {
         Column(modifier = Modifier.padding(8.dp)) {
             Text(
                 text = stringResource(R.string.question_creation_title_question),
-                fontSize = 18.sp,
+                fontSize = 20.sp,
+                modifier = Modifier.padding(bottom = 8.dp),
                 fontWeight = FontWeight.Bold,
                 color = colorResource(
                     id = R.color.text_dark
@@ -139,6 +141,7 @@ fun NewQuestionView(subjectID: Int?, navHostController: NavHostController) {
             Text(
                 text = stringResource(R.string.question_creation_title_difficulty),
                 fontSize = 18.sp,
+                modifier = Modifier.padding(bottom = 8.dp),
                 fontWeight = FontWeight.Bold,
                 color = colorResource(
                     id = R.color.text_dark
@@ -183,12 +186,23 @@ fun NewQuestionView(subjectID: Int?, navHostController: NavHostController) {
                     .padding(top = 16.dp)
             ) {
 
-                Row() {
-                    selectedPDF?.let { it1 -> Text(text = it1.document_name) }
-
-                    IconButton(onClick = { expandedFlag = true }) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "")
+                Column {
+                    Button(
+                        onClick = { expandedFlag = true },
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = colorResource(
+                                id = R.color.button_view
+                            ), backgroundColor = MaterialTheme.colors.background
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 24.dp, end = 24.dp)
+                    ) {
+                        Icon(Icons.Default.ArrowDropDown, contentDescription = "")
+                        Text(stringResource(R.string.select_pdf))
                     }
+
+                    selectedPDF?.let { it1 -> Text(text = it1.document_name) }
                 }
 
                 DropdownMenu(

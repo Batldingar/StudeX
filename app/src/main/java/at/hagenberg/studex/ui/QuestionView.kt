@@ -74,7 +74,7 @@ fun QuestionView(subjectID: Int?, navHostController: NavHostController) {
                 Text(
                     entry.key.document_name,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
+                    fontSize = 16.sp,
                     modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
                 )
 
@@ -112,7 +112,7 @@ private fun loadQuestions(
 
         for (pdf in pdfList) {
             bufferMap[pdf] =
-                AppDatabase.getInstance(context).questionDao().getQuestionsForPdf(pdf.id)
+                AppDatabase.getInstance(context).questionDao().getQuestionsForPdf(pdf.document_name)
         }
 
         withContext(Dispatchers.Main) {
