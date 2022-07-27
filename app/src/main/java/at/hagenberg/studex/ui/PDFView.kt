@@ -1,5 +1,6 @@
 package at.hagenberg.studex.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -93,30 +94,34 @@ fun PDFView(
                     )
                 }
                 Spacer(modifier = Modifier.weight(1F))
-                if (pageCount != null) {
-                    if (!selectedCardList.isEmpty()) {
-                        Button(
-                            onClick = {
-                                stageCount?.let {
+                if (pageCount != null && stageCount != null && stage != null) {
+                    if (stage!! + 1 == stageCount!!) {
+                        if (!selectedCardList.isEmpty()) {
+                            Button(
+                                onClick = {
                                     viewModel.saveCutDocument(
-                                        context, pdfName, subjectID, it - 1, selectedCardList
+                                        context,
+                                        pdfName,
+                                        subjectID,
+                                        stageCount!! - 1,
+                                        selectedCardList
                                     )
-                                }
-                            },
-                            colors = ButtonDefaults.outlinedButtonColors(
-                                contentColor = colorResource(
-                                    id = R.color.button_view
-                                ), backgroundColor = MaterialTheme.colors.background
-                            ),
-                        ) {
-                            Text(
-                                stringResource(R.string.pdf_view_new_stage_button),
-                                color = colorResource(
-                                    id = R.color.button_view
+                                },
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    contentColor = colorResource(
+                                        id = R.color.button_view
+                                    ), backgroundColor = MaterialTheme.colors.background
                                 ),
+                            ) {
+                                Text(
+                                    stringResource(R.string.pdf_view_new_stage_button),
+                                    color = colorResource(
+                                        id = R.color.button_view
+                                    ),
 
-                                )
-                            Icon(Icons.Filled.Add, contentDescription = "")
+                                    )
+                                Icon(Icons.Filled.Add, contentDescription = "")
+                            }
                         }
                     }
                 }
@@ -141,9 +146,19 @@ fun PDFView(
                         itemsIndexed(items = it1) { index, bitmap ->
                             Card(
                                 onClick = {
-                                    if (!selectedCardList.contains(index)) selectedCardList.add(
-                                        index
-                                    ) else selectedCardList.remove(index)
+                                    if (pageCount != null && stageCount != null && stage != null) {
+                                        if (stage!! + 1 == stageCount!!) {
+                                            if (!selectedCardList.contains(index)) selectedCardList.add(
+                                                index
+                                            ) else selectedCardList.remove(index)
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "You can only edit the highest stage!",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
                                 },
                                 modifier = if (selectedCardList.contains(index)) Modifier
                                     .fillMaxWidth()

@@ -46,7 +46,7 @@ fun UploadView(subjectID: Int?, navHostController: NavHostController) {
                     }
 
                     // Uploading the pdf to the database
-                    UploadView.uploadPDF(context, fileName, persistentFileName, subjectID, stage)
+                    uploadPDF(context, fileName, persistentFileName, subjectID, stage)
                 }
             }
 
@@ -58,40 +58,35 @@ fun UploadView(subjectID: Int?, navHostController: NavHostController) {
     }
 }
 
-class UploadView {
+/**
+ * Uploads a pdf file to the database asynchronously
+ * @param context The current context
+ * @param documentName The document's name
+ * @param persistentName The document's persistent name in app specific storage
+ * @param subjectID The document's corresponding subject
+ * @param stage The document's stage
+ */
+fun uploadPDF(
+    context: Context,
+    documentName: String,
+    persistentName: String,
+    subjectID: Int,
+    stage: Int
+) {
+    val newPDF =
+        PDF(
+            document_name = documentName,
+            persistent_name = persistentName,
+            subject_id = subjectID,
+            stage = stage
+        )
 
-    companion object {
-        /**
-         * Uploads a pdf file to the database asynchronously
-         * @param context The current context
-         * @param documentName The document's name
-         * @param persistentName The document's persistent name in app specific storage
-         * @param subjectID The document's corresponding subject
-         * @param stage The document's stage
-         */
-        fun uploadPDF(
-            context: Context,
-            documentName: String,
-            persistentName: String,
-            subjectID: Int,
-            stage: Int
-        ) {
-            val newPDF =
-                PDF(
-                    document_name = documentName,
-                    persistent_name = persistentName,
-                    subject_id = subjectID,
-                    stage = stage
-                )
+    CoroutineScope(Dispatchers.IO).launch {
+        AppDatabase.getInstance(context).pdfDao().insertPDF(newPDF)
 
-            CoroutineScope(Dispatchers.IO).launch {
-                AppDatabase.getInstance(context).pdfDao().insertPDF(newPDF)
-
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "PDF has been added successfully!", Toast.LENGTH_SHORT)
-                        .show()
-                }
-            }
+        withContext(Dispatchers.Main) {
+            Toast.makeText(context, "PDF has been added successfully!", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 }

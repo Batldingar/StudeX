@@ -1,7 +1,6 @@
 package at.hagenberg.studex.ui
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
@@ -30,7 +29,6 @@ class PDFViewModel : ViewModel() {
     val bitmapList = MutableLiveData<ArrayList<ImageBitmap>>()
     val loadingProgress = MutableLiveData<Float>()
     private var document: PDDocument = PDDocument()
-    private var loadedPDF: PDF = PDF("", "", 0, 0)
 
     /**
      * Loads the first page of a pdf file
@@ -43,7 +41,7 @@ class PDFViewModel : ViewModel() {
         if (pdfName == null) return
 
         viewModelScope.launch(Dispatchers.IO) {
-            loadedPDF = loadPDF(context, pdfName, subjectID, pdfStage)
+            val loadedPDF = loadPDF(context, pdfName, subjectID, pdfStage)
 
             val pdfStageCount = loadStageCount(context, pdfName, subjectID)
 
@@ -100,15 +98,15 @@ class PDFViewModel : ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO) {
 
-            loadedPDF = loadPDF(context, pdfName, subjectID, pdfStage)
-            Log.d("Tag", "$pdfName, $subjectID, $pdfStage")
+            val loadedPDF = loadPDF(context, pdfName, subjectID, pdfStage)
 
             try {
                 // Getting the document and a renderer
-                val document =
+                document =
                     PDDocument.load(context.openFileInput(loadedPDF.persistent_name))
 
-                for (pageToBeCut: Int in pagesToBeCut) {
+
+                for (pageToBeCut: Int in pagesToBeCut.sortedDescending()) {
                     ensureActive()
                     document.removePage(pageToBeCut)
                 }
@@ -118,12 +116,13 @@ class PDFViewModel : ViewModel() {
 
                 document.save(context.openFileOutput(newPersistentName, Context.MODE_PRIVATE))
 
-                UploadView.uploadPDF(
-                    context,
-                    loadedPDF.document_name,
-                    newPersistentName,
-                    loadedPDF.subject_id,
-                    newStage
+                AppDatabase.getInstance(context).pdfDao().insertPDF(
+                    PDF(
+                        document_name = loadedPDF.document_name,
+                        persistent_name = newPersistentName,
+                        subject_id = loadedPDF.subject_id,
+                        stage = newStage
+                    )
                 )
 
                 document.close()
