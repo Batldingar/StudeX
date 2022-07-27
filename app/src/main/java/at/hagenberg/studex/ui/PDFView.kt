@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.List
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -50,6 +51,7 @@ fun PDFView(
     val bitmapList: ArrayList<ImageBitmap>? by viewModel.bitmapList.observeAsState()
     val progress: Float? by viewModel.loadingProgress.observeAsState()
     val selectedCardList = remember { mutableStateListOf<Int>() }
+    var expandedFlag by remember { mutableStateOf(false) }
 
     Scaffold(topBar = {
         TopAppBar(backgroundColor = colorResource(id = R.color.foreground_view)) {
@@ -67,14 +69,40 @@ fun PDFView(
                     )
                 }
                 Spacer(modifier = Modifier.weight(1F))
-                stage?.let {
-                    Text(
-                        "Stage ${it + 1} / $stageCount",
-                        fontWeight = FontWeight.Bold,
-                        color = colorResource(
-                            id = R.color.text_light
-                        )
-                    )
+                if (stageCount != null) {
+                    Box {
+
+                        Column {
+                            Button(
+                                onClick = { expandedFlag = true },
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    contentColor = colorResource(
+                                        id = R.color.button_view
+                                    ), backgroundColor = MaterialTheme.colors.background
+                                ),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 24.dp, end = 24.dp)
+                            ) {
+                                Icon(Icons.Default.List, contentDescription = "")
+                            }
+                        }
+
+                        DropdownMenu(
+                            expanded = expandedFlag,
+                            onDismissRequest = { expandedFlag = false },
+                        ) {
+                            val list = List(stageCount!!) { it + 1 }
+
+                            list.forEach { it ->
+                                DropdownMenuItem(onClick = {
+                                    viewModel.loadDocument(context, pdfName, subjectID, it - 1)
+                                }) {
+                                    Text("Stage $it")
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
